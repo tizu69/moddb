@@ -1,6 +1,6 @@
 export const parseInputString = (input: string) => {
-	let result: { ROOT: string; [key: string]: string | undefined } = { ROOT: '' };
-	let splitInput = input.split(' ');
+	const result: { ROOT: string; [key: string]: string | undefined } = { ROOT: '' };
+	const splitInput = input.split(' ');
 
 	for (let i = 0; i < splitInput.length; i++) {
 		if (!splitInput[i].startsWith('@')) {

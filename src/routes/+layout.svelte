@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { blur } from 'svelte/transition';
-	import '../app.postcss';
+	import '../app.pcss';
 
 	let time = 0;
 	onMount(() => {
@@ -43,13 +43,13 @@
 				<div class="flex gap-2">
 					<button
 						onclick="window.location.reload(), document.body.innerHTML = ''"
-						class="inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
+						class="btn variant-outline-error"
 					>
 							Reload
 					</button>
 					<button
 						onclick="document.getElementById('errorCrashScreen').remove()"
-						class="inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-muted text-muted-foreground hover:bg-muted/90 h-10 px-4 py-2"
+						class="btn variant-filled-primary"
 					>
 							Try without reloading
 					</button>
@@ -61,7 +61,7 @@
 
 <svelte:window on:unhandledrejection={showError} on:error={showError} />
 
-<Toaster theme="dark" richColors />
+<Toaster theme="dark" visibleToasts={5} />
 
 <NavBar />
 
@@ -79,7 +79,7 @@
 </main>
 
 <!-- TODO: Put footer into its own component, if it gets any more complex -->
-<footer class="p-4 container grid grid-cols-2 *:flex *:flex-col *:gap-2">
+<footer class="p-4 container mx-auto grid grid-cols-2 *:flex *:flex-col *:gap-2">
 	<div>
 		<div class="flex gap-2 font-heading group w-fit">
 			<img src="{base}/favicon.png" alt="ModDB icon" class="h-6 w-auto min-w-[auto]" />

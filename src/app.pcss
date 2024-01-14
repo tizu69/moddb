@@ -1,0 +1,44 @@
+@import './vt.css';
+
+/* --- */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+/* --- */
+
+@font-face {
+	font-family: 'Quicksand';
+	src: url('/font.ttf');
+}
+
+:root [data-theme='wintry'] {
+	--theme-font-family-heading: 'Quicksand', sans-serif;
+}
+
+@layer utilities {
+	* {
+		@apply border-surface-300-600-token;
+	}
+
+	.container {
+		@apply max-w-screen-lg;
+	}
+}
+
+@layer components {
+	.h1,
+	.h2,
+	.h3,
+	.h4,
+	.h5,
+	.h6 {
+		@apply font-extrabold;
+	}
+
+	.btn-icon-square {
+		@apply btn-icon rounded-token;
+	}
+}

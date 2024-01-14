@@ -1,26 +1,14 @@
 import modrinth from './modrinth';
 
-export const getSingleton = (): ModProvider => {
-	// For each provider, get the ModProvider, then return a singleton that, upon used, calls ALL the providers' functions
-	const providers = Object.values(Providers).map((provider) => getProvider(provider));
-
-	const handle = async <R>(fn: string, ...args: any[]): Promise<R> => {
-		// @ts-expect-error
-		return (await Promise.all(providers.map((provider) => provider[fn](...args)))) as R;
-	};
-
-	return {
-		getMods: (query: string) => handle('getMods', query)
-	};
-};
-
 export const getProvider = (name: Providers): ModProvider => {
 	switch (name) {
 		case Providers.Modrinth:
 			return modrinth('https://api.modrinth.com/v2');
+		case Providers.ModrinthStaging:
+			return modrinth('https://staging-api.modrinth.com/v2', Providers.ModrinthStaging);
 		case Providers.Curserinth:
 			// The Curserinth API is the same as Modrinth, so we can use the same provider
-			return modrinth('https://curserinth-api.kuylar.dev/v2');
+			return modrinth('https://curserinth-api.kuylar.dev/v2', Providers.Curserinth);
 		default:
 			throw new Error('Unknown provider');
 	}
@@ -30,12 +18,15 @@ export const getProvider = (name: Providers): ModProvider => {
 
 export enum Providers {
 	Modrinth = 'modrinth',
+	ModrinthStaging = 'modrinthStaging',
 	Curserinth = 'curserinth'
 }
 
-export interface ModProvider {
-	getMods: (query: string) => Promise<Mod[]>;
+export interface SingletonModProvider {
+	getMods: (query: string, limit?: number, offset?: number) => Promise<{ count: number; mods: Mod[] }>;
 }
+
+export interface ModProvider extends SingletonModProvider {}
 
 export interface Mod {
 	id: string;
@@ -44,6 +35,10 @@ export interface Mod {
 	name: string;
 	description: string;
 
-	icon: string;
 	downloads: number;
+	watches?: number;
+
+	icon: string;
+
+	moddbSource: Providers | Providers[];
 }
