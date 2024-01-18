@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { parseInputString } from '$lib/argparse';
-	import { Providers, type Mod, getProvider } from '$lib/providers/common';
-	import { searchQueryStore, userConfigStore } from '$lib/stores';
-	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
-	import ScrollChecker from '$lib/components/ScrollChecker.svelte';
-	import { convertToArray } from '$lib/common';
+	import { searchQueryStore, sttDataStore, userConfigStore } from '$lib/stores';
+	import { Button } from '$ui/button';
+	import { Separator } from '$ui/separator';
+	import * as Tooltip from '$ui/tooltip';
+	import SearchPreview from './SearchPreview.svelte';
 
 	$: $searchQueryStore = $page.url.searchParams.get('q') ?? '';
 
+	let queryParams = parseInputString($page.url.searchParams.get('q') ?? '');
 	$: queryParams = parseInputString($searchQueryStore);
+
 	$: searchType = (() => {
 		switch (queryParams.type) {
 			case 'mod':
@@ -22,104 +24,87 @@
 		}
 	})();
 
-	let rootParam = queryParams ? queryParams.ROOT : '',
-		rootParamTimeout: NodeJS.Timeout;
-	$: if (rootParam != queryParams.ROOT) {
-		clearTimeout(rootParamTimeout);
-		rootParamTimeout = setTimeout(() => (rootParam = queryParams.ROOT), 700);
+	$: offset = +(queryParams.p ?? 1);
+
+	let query = queryParams.ROOT ?? '',
+		queryTimeout: ReturnType<typeof setTimeout>;
+	$: {
+		if (queryTimeout) clearTimeout(queryTimeout);
+		queryTimeout = setTimeout(() => {
+			query = queryParams.ROOT ?? '';
+			scrollResults = 1;
+		}, 700);
 	}
 
-	/* --- */
+	let scrollResults = 1;
 
-	let mods: {
-		[provider: string]: {
-			mods: Mod[];
-			count: number;
-		};
-	} = {};
-	$: Object.values($userConfigStore.providers).forEach((provider) => {
-		getProvider(provider)
-			.getMods(rootParam, $userConfigStore.limit)
-			.then((d) => (mods[provider] = d));
-	});
+	let count: number[] = [];
 
-	$: combinedMods = Object.values(mods)
-		.flatMap((d) => d.mods)
-		.sort((b, a) => a.downloads - b.downloads)
-		// combine mods with the same name and slug
-		.reduce((acc: Mod[], mod) => {
-			const existingMod = acc.find((m) => m.name === mod.name && m.slug === mod.slug);
-			if (existingMod) {
-				existingMod.downloads += mod.downloads;
-				existingMod.moddbSource = convertToArray(existingMod.moddbSource).concat(mod.moddbSource);
-			} else acc.push(mod);
-			return acc;
-		}, []);
+	let visibleCount: number[] = [];
+	$: totalVisibleCount = visibleCount.reduce((a, b) => a + b, 0);
+
+	$: $sttDataStore = `${totalVisibleCount} results visible`;
 </script>
 
 <svelte:head>
 	<title>{queryParams.ROOT || 'Search'} - ModDB</title>
 </svelte:head>
 
-Searching for {queryParams.ROOT} of type {searchType} - {Object.values(mods).reduce((a, b) => a + b.count, 0)} results ({combinedMods.length}
-visible)
+<!-- Searching for {queryParams.ROOT} of type {searchType} - {Object.values(mods).reduce((a, b) => a + b.count, 0)} results ({flatMods.length}
+visible) -->
 
-{#if combinedMods.length != 0}
-	{#each combinedMods as mod, i}
-		{#if typeof mod == 'object'}
-			<a
-				class="card card-hover bg-surface-backdrop-token hover:bg-surface-hover-token flex gap-2 p-2"
-				href="/p/{mod.slug}"
-			>
-				<Avatar
-					src={mod.icon}
-					alt="{mod.name} icon"
-					initials={mod.name}
-					rounded="rounded-lg"
-					width="w-12 h-12"
-					background=""
-				/>
+<div class="flex gap-1 ml-auto">
+	<!-- <DropdownMenu.Root>
+		<DropdownMenu.Trigger asChild let:builder>
+			<Button variant="outline" builders={[builder]}>
+				Sort by {$userConfigStore.search.sort}
+				<ChevronDown class="w-4 h-4 ml-1" />
+			</Button>
+		</DropdownMenu.Trigger>
+		<DropdownMenu.Content class="w-64">
+			<DropdownMenu.Label class="pb-0">Change sorting method</DropdownMenu.Label>
+			<DropdownMenu.Label class="font-normal pt-0">
+				Note: This will clear currently loaded results!
+			</DropdownMenu.Label>
+			<DropdownMenu.Separator />
+			<DropdownMenu.RadioGroup bind:value={$userConfigStore.search.sort}>
+				{#each ['relevance', 'downloads', 'watches'] as s}
+					<DropdownMenu.RadioItem value={s}>{s}</DropdownMenu.RadioItem>
+				{/each}
+			</DropdownMenu.RadioGroup>
+		</DropdownMenu.Content>
+	</DropdownMenu.Root> -->
+</div>
 
-				<div>
-					<h3 class="h3">{mod.name}</h3>
-					<p>{mod.description}</p>
+{#each Array(scrollResults) as _, i (i)}
+	<Separator class={i == 0 ? 'hidden' : ''} />
+	<SearchPreview {query} offset={offset + i} bind:count={count[i]} bind:visibleCount={visibleCount[i]} />
+{/each}
 
-					<p class="text-sm opacity-75">
-						{mod.downloads} downloads, {mod.watches} watching, slug {mod.slug}, served by {mod.moddbSource}
-					</p>
-				</div>
-			</a>
-		{:else if typeof mod == 'number' && i != 0}
-			<hr />
-		{/if}
+<!-- <ScrollChecker
+	on:change={({ detail }) => {
+		if (!detail || !$userConfigStore.search.autoPaginate) return;
+		if (count[0] < 1 || paginationTimeout) return;
+
+		// FIXME: I feel like this ain't working as intended
+		paginationTimeout = setTimeout(() => {
+			paginationTimeout = undefined;
+		}, 500);
+
+		scrollResults += 1;
+	}}
+> -->
+<div class="flex justify-center gap-1">
+	<Button on:click={() => (scrollResults += 1)}>Load more</Button>
+
+	{#each [2, 5, 10] as i}
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				<Button variant="outline" on:click={() => (scrollResults += i)}>x{i}</Button>
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				Load up to {i * $userConfigStore.search.limit} results
+			</Tooltip.Content>
+		</Tooltip.Root>
 	{/each}
-	<ScrollChecker
-		on:change={({ detail }) => {
-			if (!detail.visible || combinedMods.length == 0) return;
-			console.info('Loading more -> ' + combinedMods.length);
-			Object.values($userConfigStore.providers).forEach((provider) => {
-				getProvider(provider)
-					.getMods(rootParam, $userConfigStore.limit, provider in mods ? mods[provider].mods.length : 0)
-					.then((d) => {
-						mods[provider].mods = mods[provider].mods.concat(d.mods);
-						mods[provider].count = d.count;
-					});
-			});
-		}}
-		let:visible
-	>
-		{#if visible && combinedMods.length > 0}
-			<ProgressRadial
-				stroke={60}
-				meter="stroke-primary-500"
-				track="stroke-primary-500/5"
-				width="w-12 mx-auto"
-				strokeLinecap="round"
-			/>
-		{:else if visible && combinedMods.length == 0}
-			<p>No more results :(</p>
-		{/if}
-	</ScrollChecker>
-{:else}
-	<p>No results :(</p>
-{/if}
+</div>

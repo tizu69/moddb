@@ -1,16 +1,26 @@
 import modrinth from './modrinth';
 
 export const getProvider = (name: Providers): ModProvider => {
+	const message = 'Unknown provider: ' + name;
+
 	switch (name) {
 		case Providers.Modrinth:
-			return modrinth('https://api.modrinth.com/v2');
+			return modrinth('https://api.modrinth.com/v2', Providers.Modrinth, {
+				frontendServer: 'https://modrinth.com'
+			});
 		case Providers.ModrinthStaging:
-			return modrinth('https://staging-api.modrinth.com/v2', Providers.ModrinthStaging);
+			return modrinth('https://staging-api.modrinth.com/v2', Providers.ModrinthStaging, {
+				frontendServer: 'https://staging.modrinth.com'
+			});
 		case Providers.Curserinth:
 			// The Curserinth API is the same as Modrinth, so we can use the same provider
-			return modrinth('https://curserinth-api.kuylar.dev/v2', Providers.Curserinth);
+			return modrinth('https://curserinth-api.kuylar.dev/v2', Providers.Curserinth, {
+				modNamePrefix: 'mod__',
+				frontendServer: 'https://curserinth-tizu.vercel.app'
+			});
+
 		default:
-			throw new Error('Unknown provider');
+			throw new Error(message);
 	}
 };
 
@@ -22,11 +32,15 @@ export enum Providers {
 	Curserinth = 'curserinth'
 }
 
-export interface SingletonModProvider {
-	getMods: (query: string, limit?: number, offset?: number) => Promise<{ count: number; mods: Mod[] }>;
+export interface ModProvider {
+	getMods: (options: {
+		query: string;
+		limit?: number;
+		offset?: number;
+		sort?: 'relevance' | 'downloads' | 'watches';
+	}) => Promise<{ count: number; mods: Mod[] }>;
+	getMod: (options: { id: string }) => Promise<ModProject>;
 }
-
-export interface ModProvider extends SingletonModProvider {}
 
 export interface Mod {
 	id: string;
@@ -34,6 +48,7 @@ export interface Mod {
 
 	name: string;
 	description: string;
+	author: string;
 
 	downloads: number;
 	watches?: number;
@@ -41,4 +56,10 @@ export interface Mod {
 	icon: string;
 
 	moddbSource: Providers | Providers[];
+}
+
+export interface ModProject extends Mod {
+	longDescription: string;
+
+	sourceUrl: string;
 }

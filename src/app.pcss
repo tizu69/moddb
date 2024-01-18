@@ -5,7 +5,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind variants;
+
+@layer base {
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 240 10% 3.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 240 10% 3.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 240 10% 3.9%;
+		--primary: 142.1 76.2% 36.3%;
+		--primary-foreground: 355.7 100% 97.3%;
+		--secondary: 240 4.8% 95.9%;
+		--secondary-foreground: 240 5.9% 10%;
+		--muted: 240 4.8% 95.9%;
+		--muted-foreground: 240 3.8% 46.1%;
+		--accent: 240 4.8% 95.9%;
+		--accent-foreground: 240 5.9% 10%;
+		--destructive: 0 72.22% 50.59%;
+		--destructive-foreground: 0 0% 98%;
+		--border: 240 5.9% 90%;
+		--input: 240 5.9% 90%;
+		--ring: 142.1 76.2% 36.3%;
+		--radius: 0.5rem;
+	}
+	.dark {
+		--background: 20 14.3% 4.1%;
+		--foreground: 0 0% 95%;
+		--card: 24 9.8% 10%;
+		--card-foreground: 0 0% 95%;
+		--popover: 0 0% 9%;
+		--popover-foreground: 0 0% 95%;
+		--primary: 142.1 70.6% 45.3%;
+		--primary-foreground: 144.9 80.4% 10%;
+		--secondary: 240 3.7% 15.9%;
+		--secondary-foreground: 0 0% 98%;
+		--muted: 0 0% 15%;
+		--muted-foreground: 240 5% 64.9%;
+		--accent: 12 6.5% 15.1%;
+		--accent-foreground: 0 0% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 0 85.7% 97.3%;
+		--border: 240 3.7% 15.9%;
+		--input: 240 3.7% 15.9%;
+		--ring: 142.4 71.8% 29.2%;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border select-none;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+		font-feature-settings: 'rlig' 1, 'calt' 1;
+	}
+}
 
 /* --- */
 
@@ -14,31 +70,100 @@
 	src: url('/font.ttf');
 }
 
-:root [data-theme='wintry'] {
-	--theme-font-family-heading: 'Quicksand', sans-serif;
+@layer utilities {
+	.container {
+		@apply max-w-screen-lg;
+	}
+
+	.font-heading {
+		@apply font-bold;
+	}
 }
 
 @layer utilities {
-	* {
-		@apply border-surface-300-600-token;
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
 	}
-
-	.container {
-		@apply max-w-screen-lg;
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
 	}
 }
 
 @layer components {
-	.h1,
-	.h2,
-	.h3,
-	.h4,
-	.h5,
-	.h6 {
-		@apply font-extrabold;
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-extrabold font-heading;
 	}
 
-	.btn-icon-square {
-		@apply btn-icon rounded-token;
+	.generic-button {
+		@apply ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 hover:opacity-90;
+		@apply focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+	}
+}
+
+/* --- */
+
+@layer utilities {
+	.style-markdown h1 {
+		@apply mb-2 mt-4 text-xl;
+	}
+	.style-markdown h2 {
+		@apply mb-2 mt-4 text-lg;
+	}
+	.style-markdown h3 {
+		@apply mb-2 mt-4 text-base;
+	}
+
+	.style-markdown strong {
+		@apply font-bold;
+	}
+	.style-markdown em {
+		@apply italic;
+	}
+	.style-markdown s {
+		@apply line-through;
+	}
+	.style-markdown blockquote {
+		@apply border-l-8 border-primary p-2;
+	}
+
+	.style-markdown ol > li {
+		@apply ml-6 list-decimal;
+	}
+	.style-markdown ul > li {
+		@apply ml-6 list-disc;
+	}
+
+	.style-markdown pre {
+		@apply rounded bg-muted p-2 font-mono w-full overflow-auto text-nowrap;
+	}
+	.style-markdown pre > code {
+		@apply select-text;
+	}
+
+	.style-markdown code:not(pre code) {
+		@apply rounded bg-muted p-1 font-mono select-text;
+	}
+
+	.style-markdown a {
+		@apply transition-colors hover:text-primary underline decoration-primary;
+	}
+	.style-markdown img {
+		@apply rounded-xl;
+	}
+
+	.style-markdown table {
+		@apply table;
+	}
+
+	/* --- */
+
+	.style-markdown *:first-child {
+		@apply !mt-0;
 	}
 }

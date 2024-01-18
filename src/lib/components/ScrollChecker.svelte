@@ -12,7 +12,7 @@
 	on:inview_change={(e) =>
 		setTimeout(() => {
 			visible = e.detail.inView;
-			dispatch('change', { visible });
+			dispatch('change', visible);
 		}, 10)}
 >
 	<slot {visible} />

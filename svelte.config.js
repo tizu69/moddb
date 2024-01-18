@@ -15,6 +15,10 @@ const config = {
 
 		paths: {
 			base: '/moddb'
+		},
+
+		alias: {
+			'$ui': 'src/lib/components/ui'
 		}
 	}
 };
