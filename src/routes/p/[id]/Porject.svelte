@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { formatNumber, markdown } from '$lib/common';
-	import coverMove from '$lib/coverMove';
 	import type { ModProject } from '$lib/providers/common';
 	import * as Card from '$ui/card';
 	import * as Tabs from '$ui/tabs';
-	import { Download, Eye } from 'lucide-svelte';
+	import { BookUp2, Download, Eye, PackagePlus } from 'lucide-svelte';
+	import moment from 'moment';
 
 	export let mod: ModProject;
 	let tab = 'summary';
@@ -52,6 +52,26 @@
 					</div>
 				</Card.Content>
 			</Card.Root>
+
+			<Card.Root>
+				<Card.Content class="flex gap-2 items-center">
+					<BookUp2 class="w-8 h-8" />
+					<div>
+						<p class="font-bold">{moment(mod.dates.updated).fromNow()}</p>
+						<p class="text-sm text-muted-foreground">last update</p>
+					</div>
+				</Card.Content>
+			</Card.Root>
+
+			<Card.Root>
+				<Card.Content class="flex gap-2 items-center">
+					<PackagePlus class="w-8 h-8" />
+					<div>
+						<p class="font-bold">{moment(mod.dates.created).fromNow()}</p>
+						<p class="text-sm text-muted-foreground">created</p>
+					</div>
+				</Card.Content>
+			</Card.Root>
 		</div>
 	</Tabs.Content>
 
@@ -66,12 +86,14 @@
 	</Tabs.Content>
 
 	<Tabs.Content value="pics">
-		<div class="grid grid-cols-3 gap-1">
+		<div class="grid grid-cols-2 gap-1">
 			{#each mod.gallery || [] as img}
 				<Card.Root class="grid grid-rows-[1fr_auto]">
-					<div class="m-1 rounded-[calc(var(--radius)_-_1px)] overflow-clip" use:coverMove>
-						<img src={img.url} alt="gallery pic" class="w-full h-full object-cover overflow-visible" />
-					</div>
+					<img
+						src={img.url}
+						alt="gallery pic"
+						class="w-full h-full object-cover p-1 rounded-[calc(var(--radius)_-_1px)]"
+					/>
 
 					<Card.Content class="p-3 pt-2 pb-3 sticky bottom-0 bg-card/80 backdrop-blur">
 						{#if img.title} <h3>{img.title}</h3> {/if}

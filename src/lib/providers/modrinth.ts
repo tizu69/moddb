@@ -73,11 +73,37 @@ export default (
 				/* --- */
 
 				longDescription: item.body,
+
 				gallery: item.gallery.map((item: any) => ({
 					url: item.url,
 					title: item.title,
 					description: item.description
 				})),
+
+				info: {
+					versions: item.game_versions,
+					loaders: item.loaderd,
+					license: {
+						name: item.license.name,
+						url: item.license.url
+					}
+				},
+
+				links: {
+					issues: item.issues_url,
+					source: item.source_url,
+					wiki: item.wiki_url,
+					discord: item.discord_url,
+					donations: item.donation_urls.map((item: any) => ({
+						name: item.platform,
+						url: item.url
+					}))
+				},
+
+				dates: {
+					created: item.published,
+					updated: item.updated
+				},
 
 				sourceUrl: (extras?.frontendServer || server) + '/mod/' + item.slug,
 

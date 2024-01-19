@@ -60,11 +60,37 @@ export interface Mod {
 
 export interface ModProject extends Mod {
 	longDescription: string;
-	gallery?: {
+
+	gallery: {
 		url: string;
 		title: string;
 		description: string;
 	}[];
+
+	info: {
+		versions: string[];
+		loaders: string[];
+		license: {
+			name: string;
+			url: string;
+		};
+	};
+
+	links: {
+		issues?: string;
+		source?: string;
+		wiki?: string;
+		discord?: string;
+		donations?: {
+			name: string;
+			url: string;
+		}[];
+	};
+
+	dates: {
+		created: string;
+		updated: string;
+	};
 
 	sourceUrl: string;
 }
