@@ -39,7 +39,6 @@
 			placeholder="Search ModDB..."
 			class="transition-[width] duration-700 {$page.route.id == '/s' ? 'w-[calc(100%-12rem)]' : 'w-48 md:w-64'}"
 			bind:value={searchedFor}
-			on:focus={() => goto(`${base}/s?q=${encodeURIComponent(searchedFor)}`, { keepFocus: true, noScroll: true })}
 			on:change={() => goto(`${base}/s?q=${encodeURIComponent(searchedFor)}`)}
 			on:input={() => ($searchQueryStore = searchedFor)}
 		/>
