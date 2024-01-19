@@ -66,13 +66,18 @@ export default (
 				author: item.author,
 
 				downloads: item.downloads,
-				watches: item.follows || 0,
+				watches: item.followers || 0,
 
 				icon: item.icon_url,
 
 				/* --- */
 
 				longDescription: item.body,
+				gallery: item.gallery.map((item: any) => ({
+					url: item.url,
+					title: item.title,
+					description: item.description
+				})),
 
 				sourceUrl: (extras?.frontendServer || server) + '/mod/' + item.slug,
 

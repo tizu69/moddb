@@ -60,6 +60,11 @@ export interface Mod {
 
 export interface ModProject extends Mod {
 	longDescription: string;
+	gallery?: {
+		url: string;
+		title: string;
+		description: string;
+	}[];
 
 	sourceUrl: string;
 }

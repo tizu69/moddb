@@ -10,6 +10,7 @@
 	import { ChevronDown, ExternalLink } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import Porject from './Porject.svelte';
+	import { Badge } from '$ui/badge';
 
 	let mods: {
 		[provider in Providers]?: ModProject;
@@ -56,6 +57,9 @@
 			<DropdownMenu.Trigger asChild let:builder>
 				<Button variant="outline" builders={[builder]} disabled={!allResolved}>
 					Provided by {provider ?? 'no one'}
+					{#if Object.keys(mods).length > 1}
+						<Badge class="ml-2" variant="secondary">+ {Object.keys(mods).length - 1}</Badge>
+					{/if}
 					<ChevronDown class="w-4 h-4 ml-2" />
 				</Button>
 			</DropdownMenu.Trigger>
@@ -68,7 +72,7 @@
 
 				{#if Object.keys(mods).length > 1}
 					<DropdownMenu.Separator />
-					<DropdownMenu.Label>Also available from</DropdownMenu.Label>
+					<DropdownMenu.Label>Also available on</DropdownMenu.Label>
 
 					<DropdownMenu.RadioGroup bind:value={provider}>
 						{#each Object.keys(mods)
@@ -86,8 +90,6 @@
 	</div>
 
 	{#if mod}
-		<Porject project={mod} />
+		<Porject {mod} />
 	{/if}
-
-	<pre class="text-wrap">{JSON.stringify(mods, null, 2)}</pre>
 {/if}

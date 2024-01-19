@@ -12,7 +12,7 @@
 	$: searchedFor = $searchQueryStore;
 </script>
 
-<header class="py-3 sticky top-0 bg-background/80 backdrop-blur vtn-[header] z-[1]">
+<header class="py-3 sticky top-0 bg-background/80 backdrop-blur vtn-[header] z-50">
 	<div class="flex items-center gap-4 container mx-auto">
 		<a href="{base}/" class="hover:brightness-90">
 			<img src="{base}/favicon.png" alt="ModDB icon" class="h-6 w-auto min-w-[auto]" />
@@ -34,15 +34,23 @@
 
 		<div class="mx-auto" />
 
-		<Input
-			type="search"
-			placeholder="Search ModDB..."
+		<form
+			method="get"
+			action="{base}/s"
 			class="transition-[width] duration-700 {$page.route.id == '/s' ? 'w-[calc(100%-12rem)]' : 'w-48 md:w-64'}"
-			bind:value={searchedFor}
-			on:focus={() => goto(`${base}/s?q=${encodeURIComponent(searchedFor)}`, { keepFocus: true, noScroll: true })}
-			on:change={() => goto(`${base}/s?q=${encodeURIComponent(searchedFor)}`)}
-			on:input={() => ($searchQueryStore = searchedFor)}
-		/>
+		>
+			<Input
+				name="q"
+				autocomplete="off"
+				type="search"
+				placeholder="Search ModDB..."
+				class="w-full"
+				bind:value={searchedFor}
+				on:focus={() =>
+					goto(`${base}/s?q=${encodeURIComponent(searchedFor)}`, { keepFocus: true, noScroll: true })}
+				on:input={() => ($searchQueryStore = searchedFor)}
+			/>
+		</form>
 
 		<!-- <Button
 			on:click={() => {

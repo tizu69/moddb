@@ -26,6 +26,10 @@
 	onMount(() => (ready = true));
 
 	onNavigate((navigation) => {
+		$sttDataStore = '';
+
+		/* --- */
+
 		if (!document.startViewTransition) return;
 		if (navigation.from?.route.id == navigation.to?.route.id) return;
 
