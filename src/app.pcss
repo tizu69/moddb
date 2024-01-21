@@ -72,15 +72,19 @@
 
 @layer utilities {
 	.container {
-		@apply max-w-screen-lg;
+		@apply max-w-screen-xl;
 	}
 
 	.font-heading {
 		@apply font-bold;
 	}
-}
 
-@layer utilities {
+	.overflow-dots {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.no-scrollbar {
 		-ms-overflow-style: none;
 		scrollbar-width: none;
@@ -110,10 +114,10 @@
 
 @layer utilities {
 	.style-markdown h1 {
-		@apply mb-2 mt-4 text-xl;
+		@apply mb-2 mt-4 text-xl border-b w-full;
 	}
 	.style-markdown h2 {
-		@apply mb-2 mt-4 text-lg;
+		@apply mb-2 mt-4 text-lg border-b w-full;
 	}
 	.style-markdown h3 {
 		@apply mb-2 mt-4 text-base;

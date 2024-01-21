@@ -58,17 +58,6 @@ const config = {
 			fontFamily: {
 				sans: ['Inter', ...fontFamily.sans],
 				heading: ['Quicksand', ...fontFamily.sans]
-			},
-
-			keyframes: {
-				'C-max-h-from-48': {
-					'0%': {
-						maxHeight: '12rem'
-					},
-					'100%': {
-						maxHeight: '1000px'
-					}
-				}
 			}
 		}
 	},

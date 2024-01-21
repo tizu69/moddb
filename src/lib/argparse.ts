@@ -43,6 +43,14 @@ export const parseInputString = (input: string) => {
 	return result;
 };
 
+export const parseInputStringWithDefault = (input: string, defaultValues: { [key: string]: string }) => {
+	const result = parseInputString(input);
+	for (const [key, value] of Object.entries(defaultValues)) {
+		if (!result[key]) result[key] = value;
+	}
+	return result;
+};
+
 export const generateInputString = (inputObject: { ROOT: string; [key: string]: string | undefined }) => {
 	let result = '';
 

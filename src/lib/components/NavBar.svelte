@@ -12,7 +12,7 @@
 	$: searchedFor = $searchQueryStore;
 </script>
 
-<header class="py-3 sticky top-0 bg-background/80 backdrop-blur vtn-[header] z-50">
+<header class="py-3 sticky top-0 bg-background/80 backdrop-blur vtn-[header] z-50" id="navbar">
 	<div class="flex items-center gap-4 container mx-auto">
 		<a href="{base}/" class="hover:brightness-90">
 			<img src="{base}/favicon.png" alt="ModDB icon" class="h-6 w-auto min-w-[auto]" />

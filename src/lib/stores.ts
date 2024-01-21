@@ -16,7 +16,7 @@ export const userConfigStore = localStorageStore<{
 	lessSanitize: boolean;
 }>('userConfig', {
 	v: 1,
-	providers: ['modrinth', 'curserinth'] as Providers[],
+	providers: ['Modrinth', 'CurseRinth'] as Providers[],
 	search: {
 		limit: 20,
 		sort: 'relevance'

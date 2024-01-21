@@ -27,9 +27,9 @@ export const getProvider = (name: Providers): ModProvider => {
 /* --- */
 
 export enum Providers {
-	Modrinth = 'modrinth',
-	ModrinthStaging = 'modrinthStaging',
-	Curserinth = 'curserinth'
+	Modrinth = 'Modrinth',
+	ModrinthStaging = 'Modrinth Staging',
+	Curserinth = 'CurseRinth'
 }
 
 export interface ModProvider {
@@ -40,6 +40,8 @@ export interface ModProvider {
 		sort?: 'relevance' | 'downloads' | 'watches';
 	}) => Promise<{ count: number; mods: Mod[] }>;
 	getMod: (options: { id: string }) => Promise<ModProject>;
+	getVersions: (options: { id: string }) => Promise<ModVersion[]>;
+	getMembers: (options: { id: string }) => Promise<ModMember[]>;
 }
 
 export interface Mod {
@@ -65,11 +67,12 @@ export interface ModProject extends Mod {
 		url: string;
 		title: string;
 		description: string;
+		timestamp: string;
 	}[];
 
 	info: {
-		versions: string[];
-		loaders: string[];
+		versions?: string[];
+		loaders?: string[];
 		license: {
 			name: string;
 			url: string;
@@ -93,4 +96,20 @@ export interface ModProject extends Mod {
 	};
 
 	sourceUrl: string;
+}
+
+export interface ModVersion {
+	name: string;
+	version: string;
+
+	changelog: string;
+
+	downloads: number;
+}
+
+export interface ModMember {
+	username: string;
+	name: string;
+	avatar: string;
+	role: string;
 }

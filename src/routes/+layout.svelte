@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import NavBar from '$lib/components/NavBar.svelte';
@@ -12,6 +12,10 @@
 	import { ChevronUp } from 'lucide-svelte';
 	import '../app.pcss';
 	import { sttDataStore } from '$lib/stores';
+	import { mediaQuery } from 'svelte-legos';
+	import consts from '$lib/consts';
+
+	const mobile = mediaQuery('(max-width: 1280px)');
 
 	let time = 0;
 	onMount(() => {
@@ -102,7 +106,7 @@
 	<Toaster theme="dark" visibleToasts={5} richColors />
 
 	{#if showSTT}
-		<div class="fixed bottom-4 right-4 gap-1 items-center flex" transition:flyAndScale>
+		<div class="fixed bottom-4 right-4 gap-1 items-center flex z-20" transition:flyAndScale>
 			<p class="py-1 px-2 rounded bg-background/80 backdrop-blur">{$sttDataStore}</p>
 			<Button on:click={() => window.scroll({ top: 0, behavior: 'smooth' })} variant="outline" size="icon">
 				<ChevronUp class="h-4 w-4" />
@@ -132,9 +136,15 @@
 		</div>
 	{/if}
 
-	<main class="container mx-auto p-4 flex flex-col gap-2">
-		<slot />
-	</main>
+	<div class="container mx-auto">
+		<main
+			class={consts.SIDEBAR_PATHS.includes($page.route.id ?? '') && !$mobile
+				? 'grid grid-cols-[280px_minmax(0,1fr)] gap-2'
+				: 'p-4 flex flex-col gap-2'}
+		>
+			<slot />
+		</main>
+	</div>
 
 	<!-- TODO: Put footer into its own component, if it gets any more complex -->
 	<footer class="p-4 container mx-auto grid grid-cols-2 *:flex *:flex-col *:gap-2 gap-4">
