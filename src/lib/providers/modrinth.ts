@@ -6,6 +6,7 @@ export default (
 	extras?: {
 		modNamePrefix?: string;
 		frontendServer?: string;
+		organizations?: boolean;
 	}
 ) =>
 	({
@@ -15,7 +16,7 @@ export default (
 			sort ??= 'relevance';
 
 			const response = await fetch(
-				`${server}/search` +
+				`${server}/v2/search` +
 					`?query=${query}` +
 					`&limit=${limit}` +
 					`&offset=${offset}` +
@@ -56,7 +57,7 @@ export default (
 			};
 		},
 		getMod: async ({ id }) => {
-			const response = await fetch(`${server}/project/${extras?.modNamePrefix || ''}${id}`);
+			const response = await fetch(`${server}/v2/project/${extras?.modNamePrefix || ''}${id}`);
 			if (!response.ok) throw new Error('Failed to fetch mod ' + id + ' from ' + source);
 
 			const json = await response.json();
@@ -120,7 +121,7 @@ export default (
 			)[0];
 		},
 		getVersions: async ({ id }) => {
-			const response = await fetch(`${server}/project/${extras?.modNamePrefix || ''}${id}/version`);
+			const response = await fetch(`${server}/v2/project/${extras?.modNamePrefix || ''}${id}/version`);
 			if (!response.ok) throw new Error('Failed to fetch mod versions ' + id + ' from ' + source);
 
 			const json = await response.json();
@@ -137,11 +138,11 @@ export default (
 			);
 		},
 		getMembers: async ({ id }) => {
-			const response = await fetch(`${server}/project/${extras?.modNamePrefix || ''}${id}/members`);
+			const response = await fetch(`${server}/v2/project/${extras?.modNamePrefix || ''}${id}/members`);
 			if (!response.ok) throw new Error('Failed to fetch mod members ' + id + ' from ' + source);
 
 			const json = await response.json();
-			return json.map(
+			const result = json.map(
 				(item: any) =>
 					({
 						username: item.user.username,
@@ -150,5 +151,30 @@ export default (
 						role: item.role
 					} as ModMember)
 			);
+
+			if (extras?.organizations)
+				await (async () => {
+					const response = await fetch(
+						`${server}/v3/project/${extras?.modNamePrefix || ''}${id}/organization`
+					);
+					if (!response.ok) return;
+
+					result.splice(
+						0,
+						0,
+						[await response.json()].map(
+							(item: any) =>
+								({
+									username: item.name,
+									name: item.name,
+									avatar: item.icon_url,
+									role: item.description,
+									orga: true
+								} as ModMember)
+						)[0]
+					);
+				})();
+
+			return result;
 		}
 	} as ModProvider);

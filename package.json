@@ -47,6 +47,7 @@
     "tailwind-merge": "^2.2.0",
     "tailwind-variants": "^0.1.20",
     "tailwindcss-animate": "^1.0.7",
+    "tsparticles-confetti": "^2.12.0",
     "vaul-svelte": "^0.0.4",
     "xss": "^1.0.14",
     "zod": "^3.22.4"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatNumber } from '$lib/common';
+	import { formatNumber, getS } from '$lib/common';
 	import SidebarHelper from '$lib/components/SidebarHelper.svelte';
 	import type { Providers } from '$lib/providers/common';
 	import { sttDataStore } from '$lib/stores';
@@ -25,7 +25,8 @@
 		Signpost,
 		Image,
 		History,
-		ChevronsUpDown
+		ChevronsUpDown,
+		Building2
 	} from 'lucide-svelte';
 	import moment from 'moment';
 	import { mediaQuery } from 'svelte-legos';
@@ -118,7 +119,9 @@
 						<Separator />
 						<Collapsible.Root>
 							<div class="flex items-center justify-between">
-								<p class="text-sm text-muted-foreground">{mod._members.length} members</p>
+								<p class="text-sm text-muted-foreground">
+									{mod._members.length} member{getS(mod._members.length)}
+								</p>
 								<Collapsible.Trigger asChild let:builder>
 									<Button builders={[builder]} variant="outline" size="sm" class="w-9 p-0">
 										<ChevronsUpDown class="h-4 w-4" />
@@ -136,8 +139,15 @@
 										</Avatar.Root>
 
 										<div>
-											<p class="font-bold">{member.name ?? member.username}</p>
-											<p class="text-sm text-muted-foreground">{member.role}</p>
+											<p class="font-bold">
+												{member.name ?? member.username}
+											</p>
+											<p class="text-sm text-muted-foreground flex items-center gap-1">
+												{#if member.orga}
+													<Building2 class="w-4 h-4" />
+												{/if}
+												{member.role}
+											</p>
 										</div>
 									</div>
 								{/each}

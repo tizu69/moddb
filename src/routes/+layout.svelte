@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import NavBar from '$lib/components/NavBar.svelte';
@@ -11,7 +11,7 @@
 	import { Button } from '$ui/button';
 	import { ChevronUp } from 'lucide-svelte';
 	import '../app.pcss';
-	import { sttDataStore } from '$lib/stores';
+	import { sttDataStore, userConfigStore } from '$lib/stores';
 	import { mediaQuery } from 'svelte-legos';
 	import consts from '$lib/consts';
 
@@ -45,6 +45,16 @@
 		});
 	});
 
+	if ($page.route.id != '/settings/migrate' && $userConfigStore.v < consts.CURRENT_CONFIG)
+		window.location.pathname = base + '/settings/migrate';
+	if ($page.route.id != '/settings/migrate' && $userConfigStore.v > consts.CURRENT_CONFIG)
+		document.body.innerHTML =
+			'Your ModDB config is too recent, please clear this websites' +
+			' data if you are sure you want to use this ancient version.';
+
+	if ($userConfigStore.catppuccin) document.documentElement.classList.add('theme-catppuccin');
+	else document.documentElement.classList.add('theme-initial');
+
 	let showSTT = false;
 
 	const showError = (e: any) => {
@@ -71,6 +81,8 @@
 				}
 				${time < 20 ? '<p>If this error occurs during launch, you <b>might</b> have to reset your settings to fix it.</p>' : ''}
 
+				<hr />
+
 				<div class="flex gap-2">
 					<button
 						onclick="window.location.reload(), document.body.innerHTML = ''"
@@ -84,9 +96,18 @@
 					>
 							Try without reloading
 					</button>
+				</div>
+
+				<div class="flex gap-2">
+					<button
+						onclick="window.location.pathname = '${base}/settings/migrate', document.body.innerHTML = ''"
+						class="p-1 text-muted-foreground underline"
+					>
+							Try to migrate settings
+					</button>
 					<button
 						onclick="localStorage.removeItem('userConfig'), window.location.reload(), document.body.innerHTML = ''"
-						class="p-1 text-muted underline opacity-25 hover:opacity-100"
+						class="p-1 text-muted-foreground underline"
 					>
 							Reset settings
 					</button>
@@ -116,7 +137,7 @@
 
 	<header
 		class="bg-destructive text-destructive-foreground p-4 text-center font-heading vtn-[dev-warning]"
-		class:hidden={$page.route.id == '/'}
+		class:hidden={$page.route.id == '/' || $page.route.id == '/settings/migrate'}
 	>
 		ModDB is in a very early stage of development. Please don't expect much from it right now, and be sure to report
 		bugs and suggest new features.

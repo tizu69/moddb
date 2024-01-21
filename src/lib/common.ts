@@ -3,6 +3,7 @@ import markdownit from 'markdown-it';
 import xss from 'xss';
 import { get } from 'svelte/store';
 import { userConfigStore } from './stores';
+import { confetti } from 'tsparticles-confetti';
 
 const md = markdownit({
 	html: true,
@@ -68,4 +69,21 @@ export const formatNumber = (num: number): string => {
 	} else {
 		return Math.round(num / 1000000000) + 'B';
 	}
+};
+
+export const getS = (num: number): string => (num == 1 ? '' : 's');
+
+export const successRewarder = () => {
+	confetti({
+		particleCount: 250,
+		angle: 60,
+		spread: 55,
+		origin: { x: 0 }
+	});
+	confetti({
+		particleCount: 250,
+		angle: 120,
+		spread: 55,
+		origin: { x: 1 }
+	});
 };

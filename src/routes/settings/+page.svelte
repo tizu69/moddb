@@ -166,6 +166,25 @@
 				</div>
 			</Card.Content>
 		</Card.Root>
+
+		<Card.Root>
+			<Card.Content class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<div>
+					<h3 class="font-bold">Use a based theme?</h3>
+					<p class="text-sm text-muted-foreground">
+						Do you want to use Catppuccin Mocha? Experimental, refresh required.:ra <br />
+						(tbh I only added this cause catppuccin my beloved) <br />
+					</p>
+				</div>
+
+				<div class="flex flex-col gap-1 ml-auto items-end my-auto">
+					<div class="flex gap-2 items-center">
+						<Checkbox bind:checked={$userConfigStore.catppuccin} />
+						Use Catppuccin
+					</div>
+				</div>
+			</Card.Content>
+		</Card.Root>
 	</Tabs.Content>
 
 	<Tabs.Content value="json">

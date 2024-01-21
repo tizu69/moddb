@@ -7,7 +7,7 @@
 @tailwind utilities;
 
 @layer base {
-	:root {
+	:root.theme-initial {
 		--background: 0 0% 100%;
 		--foreground: 240 10% 3.9%;
 		--card: 0 0% 100%;
@@ -29,7 +29,7 @@
 		--ring: 142.1 76.2% 36.3%;
 		--radius: 0.5rem;
 	}
-	.dark {
+	.dark.theme-initial {
 		--background: 20 14.3% 4.1%;
 		--foreground: 0 0% 95%;
 		--card: 24 9.8% 10%;
@@ -49,6 +49,29 @@
 		--border: 240 3.7% 15.9%;
 		--input: 240 3.7% 15.9%;
 		--ring: 142.4 71.8% 29.2%;
+	}
+	
+	.dark.theme-catppuccin {
+		--background: 240 21% 15%;
+		--foreground: 226 64% 88%;
+		--card: 237 16% 23%;
+		--card-foreground: 226 64% 88%;
+		--popover: 240 21% 15%;
+		--popover-foreground: 226 64% 88%;
+		--primary: 267 84% 81%;
+		--primary-foreground: 240 21% 15%;
+		--secondary: 234 13% 31%;
+		--secondary-foreground: 226 64% 88%;
+		--muted: 233 12% 39%;
+		--muted-foreground: 226 64% 88%;
+		--accent: 267 84% 81%;
+		--accent-foreground: 240 21% 15%;
+		--destructive: 343 81% 75%;
+		--destructive-foreground: 240 21% 15%;
+		--border: 233 12% 39%;
+		--input: 233 12% 39%;
+		--ring: 267 84% 81%;
+		--radius: 0.5rem;
 	}
 }
 

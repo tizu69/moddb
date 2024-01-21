@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import type { Providers } from './providers/common';
 import { localStorageStore } from './lss';
+import consts from './consts';
 
 export const searchQueryStore = writable('');
 export const sttDataStore = writable('');
@@ -14,12 +15,8 @@ export const userConfigStore = localStorageStore<{
 		// preferredModSource: Providers[]; - this uses the providers enum now
 	};
 	lessSanitize: boolean;
+	catppuccin: boolean;
 }>('userConfig', {
-	v: 1,
-	providers: ['Modrinth', 'CurseRinth'] as Providers[],
-	search: {
-		limit: 20,
-		sort: 'relevance'
-	},
-	lessSanitize: false
+	v: consts.CURRENT_CONFIG,
+	...consts.CONFIG
 });

@@ -5,16 +5,18 @@ export const getProvider = (name: Providers): ModProvider => {
 
 	switch (name) {
 		case Providers.Modrinth:
-			return modrinth('https://api.modrinth.com/v2', Providers.Modrinth, {
-				frontendServer: 'https://modrinth.com'
+			return modrinth('https://api.modrinth.com', Providers.Modrinth, {
+				frontendServer: 'https://modrinth.com',
+				organizations: true
 			});
 		case Providers.ModrinthStaging:
-			return modrinth('https://staging-api.modrinth.com/v2', Providers.ModrinthStaging, {
-				frontendServer: 'https://staging.modrinth.com'
+			return modrinth('https://staging-api.modrinth.com', Providers.ModrinthStaging, {
+				frontendServer: 'https://staging.modrinth.com',
+				organizations: true
 			});
 		case Providers.Curserinth:
 			// The Curserinth API is the same as Modrinth, so we can use the same provider
-			return modrinth('https://curserinth-api.kuylar.dev/v2', Providers.Curserinth, {
+			return modrinth('https://curserinth-api.kuylar.dev', Providers.Curserinth, {
 				modNamePrefix: 'mod__',
 				frontendServer: 'https://curserinth-tizu.vercel.app'
 			});
@@ -112,4 +114,5 @@ export interface ModMember {
 	name: string;
 	avatar: string;
 	role: string;
+	orga?: boolean;
 }
